@@ -1,0 +1,34 @@
+<!--
+  Copyright 2012 The Android Open Source Project
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  -->
+
+<resources>
+    <string name="app_name">唐诗三百首</string>
+
+    <string name="dummy_section_text">Section %1d is just a dummy section.</string>
+
+    <string name="demo_external_activity">Demo External Activity</string>
+    <string name="demo_collection">Demo Collection</string>
+    
+    <string name="page1_title">最近背过</string>
+    <string name="page2_title">所有</string>
+    <string name="page3_title">当前</string>
+    
+    <string name="button_learn_next">学习下一首诗</string>
+    <string name="label_learn_process">学习0总计100</string>
+    <string name="empty_poem_title">还不知道诗名呢</string>
+    <string name="empty_poem_author">匿名</string>
+    <string name="empty_poem_snapshot">啥都没有</string>
+</resources>

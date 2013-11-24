@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:paddingLeft="16dp"
+    android:paddingBottom="8dp"
+    android:paddingTop="8dp" >
+    
+    <LinearLayout android:orientation="horizontal"
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content"
+		android:paddingBottom="4dp"
+		>
+
+		<TextView android:id="@+id/label_poem_title" 
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content" 
+			android:textColor="#222222"
+			android:textAppearance="?android:attr/textAppearanceLarge"
+			android:layout_marginRight="16sp" />
+		<TextView android:id="@+id/label_poem_author" 
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content" 
+			android:textColor="#999999"
+			android:textSize="16sp" />
+
+	</LinearLayout>
+	
+    <TextView android:id="@+id/label_poem_snapshot"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:textColor="#777777"
+        android:textSize="16sp"/>
+
+</LinearLayout>
