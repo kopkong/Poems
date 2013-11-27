@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   Copyright 2012 The Android Open Source Project
 
@@ -12,29 +13,42 @@
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
-  -->
+-->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.android.effectivenavigation"
     android:versionCode="1"
-    android:versionName="1.0">
+    android:versionName="1.0" >
 
-    <uses-sdk android:minSdkVersion="11" android:targetSdkVersion="19" />
+    <uses-sdk
+        android:minSdkVersion="11"
+        android:targetSdkVersion="19" />
 
-    <application android:label="@string/app_name"
-        android:icon="@drawable/ic_launcher"
-        android:theme="@android:style/Theme.Holo.Light"
+    <application
         android:allowBackup="true"
-        >
-
-        <activity android:name=".MainActivity" android:label="@string/app_name">
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@android:style/Theme.Holo.Light" >
+        <activity
+            android:name="com.example.android.effectivenavigation.MainActivity"
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".CollectionDemoActivity" android:label="@string/demo_collection" />
-
+        <activity
+            android:name="com.example.android.effectivenavigation.CollectionDemoActivity"
+            android:label="@string/demo_collection" />
+        <activity
+            android:name="com.example.android.effectivenavigation.SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:parentActivityName="com.example.android.effectivenavigation.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.android.effectivenavigation.MainActivity" />
+        </activity>
     </application>
+
 </manifest>

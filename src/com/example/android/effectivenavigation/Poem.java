@@ -1,6 +1,7 @@
 package com.example.android.effectivenavigation;
 
 public class Poem {
+	public int ID;
 	public String Title;
 	public String Author;
 	public String Snapshot;
