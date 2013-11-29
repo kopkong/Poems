@@ -3,6 +3,8 @@ package com.example.android.effectivenavigation;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -16,6 +18,7 @@ import android.content.Context;
 
 public class DataHelper {
 	private Context ActivityContext;
+	private static Dictionary<Integer,Poem> PoemDict;
 	private static ArrayList<Poem> Poems;
 	private static ArrayList<String> PoemGenre;
 	final int RECENT_RANGE_MIN = 0;
@@ -26,6 +29,7 @@ public class DataHelper {
 	{
 		ActivityContext = context;
 		
+		PoemDict = new Hashtable<Integer,Poem>();
 		Poems = new ArrayList<Poem>();
 		PoemGenre = new ArrayList<String>();
 		
@@ -72,6 +76,14 @@ public class DataHelper {
 			return 0;
 	}
 	
+	public Poem GetPoemByID(int poemID)
+	{
+		if(PoemDict != null)
+			return PoemDict.get(poemID);
+		
+		return null;
+	}
+	
 	private void LoadStaticPoemsData()
 	{
 		try
@@ -114,6 +126,7 @@ public class DataHelper {
 				p.Genre = obj.getString("genre");
 				
 				Poems.add(p);
+				PoemDict.put(p.ID, p);
 			}
 			
 			// Load Genre

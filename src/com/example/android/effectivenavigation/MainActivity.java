@@ -214,7 +214,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
          		holder.item.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						Intent intent = new Intent(mContext,SettingsActivity.class);
+						Intent intent = new Intent(mContext,Quiz.class);
 						startActivity(intent);
 //						AlertDialog.Builder builder = new AlertDialog.Builder(mContext);  
 //						builder.setTitle((String)listData.get(position).get("title"));
