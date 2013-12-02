@@ -1,4 +1,4 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -6,11 +6,59 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".Quiz" >
+    tools:context=".Quiz"
+    android:orientation="vertical"
+    android:gravity="top" >
 
     <TextView
+        android:id="@+id/label_quiz_title"
+        android:layout_width="match_parent"
+        android:layout_height="50sp"
+        android:text="@string/empty_poem_title"
+        android:gravity="center"
+        android:textSize="30sp"
+        android:layout_weight="0.5"
+        android:background="#B9CBFA" />
+    
+    <TextView
+        android:id="@+id/label_quiz_author"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:gravity="center"
+        android:text="@string/empty_poem_author"
+        android:textSize="25sp"
+        android:background="#F2D1CC" /> 
+        
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="3" >
+    <LinearLayout 
+        android:id="@+id/ll_quiz"
+        android:orientation="vertical" 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:padding="30sp"
+        android:layout_marginTop="10sp"
+        >
+    </LinearLayout>
+    </ScrollView>
+    
+    <RelativeLayout 
+        android:id="@+id/rl_mixed"
+        android:orientation="vertical" 
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="#66B6AB"	>
+    <TextView
+        android:id="@+id/label_midex_word1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
+        android:gravity="center"
+        android:text="@string/mixed_word"
+        android:textSize="16sp" /> 
+        
+    </RelativeLayout>
 
-</RelativeLayout>
+</LinearLayout>

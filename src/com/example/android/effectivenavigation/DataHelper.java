@@ -98,8 +98,6 @@ public class DataHelper {
 				JSONObject obj = poemsArray.getJSONObject(i);
 				
 				Poem p = new Poem();
-				String title = obj.getString("title");
-				title = title.length() > 12 ? title.substring(0,11) + "…": title;
 				String context = obj.getString("content");
 				String snapshot = "";
 				
@@ -119,7 +117,7 @@ public class DataHelper {
 				}
 				
 				p.ID = obj.getInt("id");
-				p.Title = title;
+				p.Title = obj.getString("title"); ;
 				p.Author = obj.getString("author");
 				p.Context = context;
 				p.Snapshot = snapshot;

@@ -41,22 +41,13 @@ import android.widget.TextView;
 
 public class MainActivity extends FragmentActivity implements ActionBar.TabListener {
 
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide fragments for each of the
-     * three primary sections of the app. We use a {@link android.support.v4.app.FragmentPagerAdapter}
-     * derivative, which will keep every loaded fragment in memory. If this becomes too memory
-     * intensive, it may be best to switch to a {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
+    // Global state and variables
+    static MyApp appState;
+    
     AppSectionsPagerAdapter mAppSectionsPagerAdapter;
-
-    /**
-     * The {@link ViewPager} that will display the three primary sections of the app, one at a
-     * time.
-     */
     ViewPager mViewPager;
     
-    public final static int CURRENT_POEM_ID = 0;
-    public static DataHelper helper ;
+    private static DataHelper helper ;
     
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,7 +91,8 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 				.setText(getResources().getString(R.string.page2_title))
 				.setTabListener(this));
         
-        // Load data
+        // Init and load data
+        appState = ((MyApp)getApplicationContext());
         helper = new DataHelper(this);
     }
 
@@ -211,10 +203,15 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
          			holder = (ViewHolder)convertView.getTag();
          		}
          		
+         		holder.title.setText((String)listData.get(position).get("title"));
+         		holder.author.setText((String)listData.get(position).get("author"));
+         		holder.snapshot.setText((String)listData.get(position).get("snapshot"));
+         		
          		holder.item.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
 						Intent intent = new Intent(mContext,Quiz.class);
+						appState.SetQuizPoem(helper.GetPoemByID((Integer)listData.get(position).get("id")));
 						startActivity(intent);
 //						AlertDialog.Builder builder = new AlertDialog.Builder(mContext);  
 //						builder.setTitle((String)listData.get(position).get("title"));
@@ -223,16 +220,8 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 //						builder.show();
 					}
 				});
-         		
-         		holder.title.setText((String)listData.get(position).get("title"));
-         		holder.author.setText((String)listData.get(position).get("author"));
-         		holder.snapshot.setText((String)listData.get(position).get("snapshot"));
-         		
          		return convertView;
          	}
-         	
-         	
-         	
          }
     }
     
@@ -253,12 +242,14 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     				Map<String,Object> map = new HashMap<String,Object>();
     				if(p != null)
 					{
-		    			map.put("title",p.Title);
+    					map.put("id", p.ID);
+		    			map.put("title",p.GetShortTitle());
 		    			map.put("author", p.Author);
 		    			map.put("snapshot", p.Snapshot);
 					}
 		    		else
 		    		{
+		    			map.put("id", 0);
 		    			map.put("title",getResources().getString(R.string.empty_poem_title));
 		    			map.put("author",getResources().getString(R.string.empty_poem_author));
 		    			map.put("snapshot",getResources().getString(R.string.empty_poem_snapshot));
@@ -302,12 +293,14 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 	        				Map<String,Object> map = new HashMap<String,Object>();
 	        				if(p != null)
 	    					{
-	    		    			map.put("title",p.Title);
+	        					map.put("id", p.ID);
+	    		    			map.put("title",p.GetShortTitle());
 	    		    			map.put("author", p.Author);
 	    		    			map.put("snapshot", p.Snapshot);
 	    					}
 	    		    		else
 	    		    		{
+	    		    			map.put("id", 0);
 	    		    			map.put("title",getResources().getString(R.string.empty_poem_title));
 	    		    			map.put("author",getResources().getString(R.string.empty_poem_author));
 	    		    			map.put("snapshot",getResources().getString(R.string.empty_poem_snapshot));
