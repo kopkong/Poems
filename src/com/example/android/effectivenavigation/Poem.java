@@ -24,13 +24,14 @@ public class Poem {
 			noPuncutationContext = "";
 			String ch = "";
 			String line = "";
+			String puncutations ="，。！？";
 			
 			for(int i = 0; i < Context.length();i++)
 			{
 				ch = Context.substring(i,i+1);
 				line += ch;
 				
-				if( ch.equals("，") || ch.equals("。")  || ch.equals("！") || ch.equals("？") )
+				if(puncutations.contains(ch))
 				{
 					// Push into Array and start a new line
 					linesContent.add(line);

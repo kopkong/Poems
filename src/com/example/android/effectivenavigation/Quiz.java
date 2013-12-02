@@ -1,17 +1,24 @@
 package com.example.android.effectivenavigation;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
+@SuppressLint("NewApi")
 public class Quiz extends Activity {
 	private static Poem quizPoem;
+	private static int current_selected_row = 0;
+	private static int current_selected_col = 0;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -38,34 +45,35 @@ public class Quiz extends Activity {
         for(int i=0;i<lines;i++)
         {
         	String str = quizPoem.GetPoemLineText(i);
-        	if( i%2 == 0)
-        	{
-        		TextView t3 = new TextView(this);
-        		t3.setText(str);
-        		t3.setTextSize(20);
-        		ll.addView(t3);
-        	}
-        	else
-        	{
-        		LinearLayout ll2 = new LinearLayout(this);
-        		ll2.setOrientation(0);
-        		ll.addView(ll2);
-        		
-        		int len = str.length();
-        		
-        		for(int j =0 ; j<len; j++)
-        		{
-        			TextView tCell = new TextView(this);
-        			tCell.setBackgroundColor(Color.GRAY);
-        			tCell.setTextSize(20);
-        			if(j == len - 1)
-        				tCell.setText(str.substring(j, j+1));
-        			else
-        				tCell.setText("²â");
-        			
-        			ll2.addView(tCell);
-        		}
-        	}
+    		LinearLayout ll2 = new LinearLayout(this);
+    		ll2.setOrientation(0);
+    		ll.addView(ll2);
+    		int len = str.length();
+    		
+    		for(int j =0 ; j<len; j++)
+    		{
+    			TextView tCell = new TextView(this);
+    			setQuizCellLayout(tCell);
+    			
+    			if(i%2 == 0 || j == len - 1)
+    			{
+    				setNormalQuizCellStyle(tCell);
+    				tCell.setText(str.substring(j, j+1));
+    			}
+    			else
+    			{
+    				setBorderQuizCellStyle(tCell);
+    				tCell.setOnClickListener(new OnClickListener(){
+    					@Override
+    					public void onClick(View v)
+    					{
+    						setSelectedQuizCellStyle((TextView)v);
+    					}
+    				});
+    			}
+    			ll2.addView(tCell);
+    		}
+        	
         }
 	}
 
@@ -102,4 +110,45 @@ public class Quiz extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 
+	private void setQuizCellLayout(TextView cell)
+	{
+		cell.setWidth(120);
+		cell.setHeight(120);
+		cell.setTextSize(25);
+		cell.setGravity(Gravity.CENTER);
+	}
+	
+	@SuppressWarnings("deprecation")
+	private void setBorderQuizCellStyle(TextView cell)
+	{
+		Drawable borderBackground = this.getResources().getDrawable(R.drawable.quizcell_border);
+		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+			cell.setBackground(borderBackground);
+		else
+			cell.setBackgroundDrawable(borderBackground);
+	}
+	
+	private void setNormalQuizCellStyle(TextView cell)
+	{
+		// do something here ?
+	}
+	
+	private void setSelectedQuizCellStyle(TextView cell)
+	{
+		Drawable borderBackground = this.getResources().getDrawable(R.drawable.quizcell_selected);
+		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+			cell.setBackground(borderBackground);
+		else
+			cell.setBackgroundDrawable(borderBackground);
+	}
+	
+	private void setCheckedWrongQuizCellStyle(TextView cell)
+	{
+		
+	}
+	
+	private void unSelectedQuizCell(int row,int col)
+	{
+		
+	}
 }
