@@ -5,20 +5,28 @@ import android.app.Activity;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
 import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import java.util.Map;
+import java.util.HashMap;
 
 @SuppressLint("NewApi")
 public class Quiz extends Activity {
 	private static Poem quizPoem;
-	private static int current_selected_row = 0;
-	private static int current_selected_col = 0;
+	private static int current_selected_cellid = -1;
+	private static int cellid_count = 0;
+	private static Map<Integer,Integer> cellid_toRowIndex;
+	private static Map<Integer,Integer> cellid_toColumnIndex;
+	
+	enum CellState
+	{
+		Normal,
+		Selected,
+		MarkedWrong
+	};
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +38,8 @@ public class Quiz extends Activity {
         // Init and load data
         MyApp appState = ((MyApp)getApplicationContext());
         quizPoem = appState.GetQuizPoem();
+        cellid_toRowIndex = new HashMap<Integer,Integer>();
+        cellid_toColumnIndex = new HashMap<Integer,Integer>();
         
         // Show Title
         TextView t1 = (TextView)this.findViewById(R.id.label_quiz_title);
@@ -40,7 +50,18 @@ public class Quiz extends Activity {
         t2.setText(quizPoem.Author);
         
         // Show Contents
-        LinearLayout ll = (LinearLayout)this.findViewById(R.id.ll_quiz);
+        showQuizContent();
+        
+        // Show Options
+        showOptionWords();
+	}
+	
+	/**
+	 * Show Quiz content = the content of the poem
+	 */
+	private void showQuizContent()
+	{
+		LinearLayout ll = (LinearLayout)this.findViewById(R.id.ll_quiz);
         int lines =  quizPoem.GetPoemLineCount();
         for(int i=0;i<lines;i++)
         {
@@ -53,28 +74,49 @@ public class Quiz extends Activity {
     		for(int j =0 ; j<len; j++)
     		{
     			TextView tCell = new TextView(this);
+    			tCell.setId(getQuizCellId(i,j));
     			setQuizCellLayout(tCell);
     			
     			if(i%2 == 0 || j == len - 1)
     			{
-    				setNormalQuizCellStyle(tCell);
+    				//setQuizCellStyle(tCell,CellState.Normal);
     				tCell.setText(str.substring(j, j+1));
     			}
     			else
     			{
-    				setBorderQuizCellStyle(tCell);
+    				setQuizCellStyle(tCell,CellState.Normal);
     				tCell.setOnClickListener(new OnClickListener(){
     					@Override
     					public void onClick(View v)
     					{
-    						setSelectedQuizCellStyle((TextView)v);
+    						selectCell((TextView)v);
     					}
     				});
     			}
     			ll2.addView(tCell);
     		}
-        	
         }
+	}
+	
+	/**
+	 * Show the option words to complete the poem
+	 */
+	private void showOptionWords()
+	{
+		// need to know which line/row is selected
+		// Option words won't change for one row
+	}
+	
+	/**
+	 * Return identity for quiz cell
+	 */
+	private int getQuizCellId(int rowIndex,int colIndex)
+	{
+		int cellid = cellid_count;
+		cellid_toRowIndex.put(cellid, rowIndex);
+		cellid_toColumnIndex.put(cellid, colIndex);
+		cellid_count++;
+		return cellid;
 	}
 
 	/**
@@ -85,31 +127,10 @@ public class Quiz extends Activity {
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 
 	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.quiz, menu);
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case android.R.id.home:
-			// This ID represents the Home or Up button. In the case of this
-			// activity, the Up button is shown. Use NavUtils to allow users
-			// to navigate up one level in the application structure. For
-			// more details, see the Navigation pattern on Android Design:
-			//
-			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
-			//
-			NavUtils.navigateUpFromSameTask(this);
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
-	}
-
+	
+	/** 
+	 * Initial quiz cell's layout 
+	 */
 	private void setQuizCellLayout(TextView cell)
 	{
 		cell.setWidth(120);
@@ -118,37 +139,62 @@ public class Quiz extends Activity {
 		cell.setGravity(Gravity.CENTER);
 	}
 	
-	@SuppressWarnings("deprecation")
-	private void setBorderQuizCellStyle(TextView cell)
+	/** 
+	 * Change cell style
+	 */
+	private void setQuizCellStyle(TextView cell,CellState state)
 	{
-		Drawable borderBackground = this.getResources().getDrawable(R.drawable.quizcell_border);
+		Drawable borderBackground;
+		switch(state)
+		{
+		case Normal:
+			borderBackground = this.getResources().getDrawable(R.drawable.quizcell_border);
+			break;
+		case Selected:
+			borderBackground = this.getResources().getDrawable(R.drawable.quizcell_selected);
+			break;
+		case MarkedWrong:
+			borderBackground = null;
+			break;
+		default:
+			borderBackground = null;
+			break;
+		}
+		
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
 			cell.setBackground(borderBackground);
 		else
 			cell.setBackgroundDrawable(borderBackground);
-	}
-	
-	private void setNormalQuizCellStyle(TextView cell)
-	{
-		// do something here ?
-	}
-	
-	private void setSelectedQuizCellStyle(TextView cell)
-	{
-		Drawable borderBackground = this.getResources().getDrawable(R.drawable.quizcell_selected);
-		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
-			cell.setBackground(borderBackground);
-		else
-			cell.setBackgroundDrawable(borderBackground);
-	}
-	
-	private void setCheckedWrongQuizCellStyle(TextView cell)
-	{
 		
 	}
 	
-	private void unSelectedQuizCell(int row,int col)
+	/**
+	 * Action when one cell is taped
+	 */
+	private void selectCell(TextView cell)
 	{
+		// Parse rowIndex and colIndex from ID first
+		int id = cell.getId();
+		//int rowIndex = cellid_toRowIndex.get(id);
+		//int colIndex = cellid_toColumnIndex.get(id);
+		
+		// do nothing if tap on cell repeatedly
+		if(id == current_selected_cellid)
+			return;
+		
+		// unselect current cell, if there has.
+		if(current_selected_cellid > 0)
+		{
+			TextView tv = (TextView)this.findViewById(current_selected_cellid);
+			setQuizCellStyle(tv,CellState.Normal);
+		}
+		
+		// set current cell
+		current_selected_cellid = id;
+		
+		// change style
+		setQuizCellStyle(cell, CellState.Selected);
 		
 	}
+	
 }
