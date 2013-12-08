@@ -40,19 +40,25 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="top"
-        
         >
     </LinearLayout>
     </ScrollView>
     
-    <RelativeLayout 
-        android:id="@+id/rl_options"
-        android:orientation="vertical" 
+    <LinearLayout 
+        android:id="@+id/ll_options1"
+        android:orientation="horizontal" 
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="50dp"
+        android:background="#A2B6AB"
+        android:padding="10dp"	>
+    </LinearLayout>
+    <LinearLayout 
+        android:id="@+id/ll_options2"
+        android:orientation="horizontal" 
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
         android:background="#66B6AB"
-        android:padding="20sp"	>
- 
-    </RelativeLayout>
+        android:padding="10dp"	>
+    </LinearLayout>
 
 </LinearLayout>

@@ -20,9 +20,11 @@ import android.widget.TextView;
 public class Quiz extends Activity {
 	private static Poem quizPoem;
 	private static int current_selected_cellid = -1;
+	private static int current_selected_optionid = -1;
 	private static int cellid_count = 0;
 	private static Map<Integer,Integer> cellid_toRowIndex;
 	private static Map<Integer,Integer> cellid_toColumnIndex;
+	private static String current_selectedWord;
 	
 	// Save all textView control for option words
 	// For frequent usage 
@@ -32,6 +34,7 @@ public class Quiz extends Activity {
 	{
 		Normal,
 		Selected,
+		NormalOption,
 		MarkedWrong
 	};
 	
@@ -96,7 +99,7 @@ public class Quiz extends Activity {
     					@Override
     					public void onClick(View v)
     					{
-    						selectCell((TextView)v);
+    						selectQuizCell((TextView)v);
     					}
     				});
     			}
@@ -110,12 +113,14 @@ public class Quiz extends Activity {
 	 */
 	private void showOptionWords()
 	{	
-		// Generate textview for every option
-		RelativeLayout rl = (RelativeLayout)this.findViewById(R.id.rl_options);
+		// Linear container to put text view in it
+		LinearLayout optLine1 = (LinearLayout)this.findViewById(R.id.ll_options1);
+		LinearLayout optLine2 = (LinearLayout)this.findViewById(R.id.ll_options2);
 		
 		// 14 options word 
 		textView_OptionWords = new ArrayList<TextView>(Poem.MAX_OPTION_WORDS);
 		
+		// Generate textview for every option
 		for(int i=0;i< Poem.MAX_OPTION_WORDS; i ++)
 		{
 			TextView optionView = new TextView(this);
@@ -123,12 +128,29 @@ public class Quiz extends Activity {
 			optionView.setId(getOptionCellId(i));
 			optionView.setWidth(80);
 			optionView.setHeight(80);
-			optionView.setTextSize(18);
+			optionView.setTextSize(22);
 			optionView.setGravity(Gravity.CENTER);
+		    LinearLayout.LayoutParams lp = 
+		            new LinearLayout.LayoutParams( LinearLayout.LayoutParams.WRAP_CONTENT,
+		            		LinearLayout.LayoutParams.WRAP_CONTENT);
+	        lp.setMargins(0,0,0,5);
+	        
+	        optionView.setOnClickListener(new OnClickListener(){
+				@Override
+				public void onClick(View v)
+				{
+					selectOptionCell((TextView)v);
+				}
+			});
+	        
+			// Option 1- 7 put in line 1
+			if(i < 7) 
+				optLine1.addView(optionView,lp);
+			else
+				optLine2.addView(optionView,lp);
 			
+			// Save text view
 			textView_OptionWords.add(optionView);
-			
-			rl.addView(optionView);
 		}
 		
 		// Display Initial option word
@@ -195,6 +217,9 @@ public class Quiz extends Activity {
 		case MarkedWrong:
 			borderBackground = null;
 			break;
+		case NormalOption:
+			borderBackground = null;
+			break;
 		default:
 			borderBackground = null;
 			break;
@@ -210,12 +235,10 @@ public class Quiz extends Activity {
 	/**
 	 * Action when one cell is taped
 	 */
-	private void selectCell(TextView cell)
+	private void selectQuizCell(TextView cell)
 	{
 		// Parse rowIndex and colIndex from ID first
 		int id = cell.getId();
-		//int rowIndex = cellid_toRowIndex.get(id);
-		//int colIndex = cellid_toColumnIndex.get(id);
 		
 		// do nothing if tap on cell repeatedly
 		if(id == current_selected_cellid)
@@ -237,6 +260,36 @@ public class Quiz extends Activity {
 	}
 	
 	/**
+	 * Action when one cell is taped
+	 */
+	private void selectOptionCell(TextView cell)
+	{
+		// Parse rowIndex and colIndex from ID first
+		int id = cell.getId();
+		
+		// do nothing if tap on cell repeatedly
+		if(id == current_selected_optionid)
+			return;
+		
+		// unselect current cell, if there has.
+		if(current_selected_optionid > 0)
+		{
+			TextView previous = (TextView)this.findViewById(current_selected_optionid);
+			setQuizCellStyle(previous,CellState.NormalOption);
+		}
+		
+		// Set current cell
+		current_selected_optionid = id;
+		
+		// Save current selected word
+		current_selectedWord = cell.getText().toString();
+		
+		// Change style
+		setQuizCellStyle(cell, CellState.Selected);
+		
+	}
+	
+	/**
 	 * Set/Reset Option words
 	 */
 	private void setOptionsText()
@@ -253,7 +306,8 @@ public class Quiz extends Activity {
 		for(int i =0 ; i< options.size() ; i++)
 		{
 			textView_OptionWords.get(i).setText(options.get(i));
-			//TextView  optView = (TextView)this.findViewById();
 		}
 	}
+	
+	
 }

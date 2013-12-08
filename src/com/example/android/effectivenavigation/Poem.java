@@ -63,18 +63,18 @@ public class Poem {
 			return;
 		
 		lineOptionWords = new HashMap<Integer,ArrayList<String>>();
-		
-		// all words that have possibility to become one option
-		String allOptionWords = "";
-		
-		// Store no random options
-		String noRandomOptionWords = "";
-		
-		// Random options and store into final results
-		ArrayList<String> finalOptionWords = new ArrayList<String>(MAX_OPTION_WORDS);
-		
+				
 		for(int rIndex = 0 ; rIndex<lineCount ; rIndex++)
 		{
+			// all words that have possibility to become one option
+			String allOptionWords = "";
+			
+			// Store no random options
+			String noRandomOptionWords = "";
+			
+			// Random options and store into final results
+			ArrayList<String> finalOptionWords = new ArrayList<String>(MAX_OPTION_WORDS);
+			
 			// Every words in line text should be added in final Options
 			String line = GetPoemLineText(rIndex);
 			// Cut the punctuation
