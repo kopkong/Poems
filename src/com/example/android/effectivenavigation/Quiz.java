@@ -1,5 +1,9 @@
 package com.example.android.effectivenavigation;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.graphics.drawable.Drawable;
@@ -9,9 +13,8 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-import java.util.Map;
-import java.util.HashMap;
 
 @SuppressLint("NewApi")
 public class Quiz extends Activity {
@@ -20,6 +23,10 @@ public class Quiz extends Activity {
 	private static int cellid_count = 0;
 	private static Map<Integer,Integer> cellid_toRowIndex;
 	private static Map<Integer,Integer> cellid_toColumnIndex;
+	
+	// Save all textView control for option words
+	// For frequent usage 
+	private static ArrayList<TextView> textView_OptionWords;
 	
 	enum CellState
 	{
@@ -102,9 +109,30 @@ public class Quiz extends Activity {
 	 * Show the option words to complete the poem
 	 */
 	private void showOptionWords()
-	{
-		// need to know which line/row is selected
-		// Option words won't change for one row
+	{	
+		// Generate textview for every option
+		RelativeLayout rl = (RelativeLayout)this.findViewById(R.id.rl_options);
+		
+		// 14 options word 
+		textView_OptionWords = new ArrayList<TextView>(Poem.MAX_OPTION_WORDS);
+		
+		for(int i=0;i< Poem.MAX_OPTION_WORDS; i ++)
+		{
+			TextView optionView = new TextView(this);
+			
+			optionView.setId(getOptionCellId(i));
+			optionView.setWidth(80);
+			optionView.setHeight(80);
+			optionView.setTextSize(18);
+			optionView.setGravity(Gravity.CENTER);
+			
+			textView_OptionWords.add(optionView);
+			
+			rl.addView(optionView);
+		}
+		
+		// Display Initial option word
+		setOptionsText();
 	}
 	
 	/**
@@ -117,6 +145,17 @@ public class Quiz extends Activity {
 		cellid_toColumnIndex.put(cellid, colIndex);
 		cellid_count++;
 		return cellid;
+	}
+	
+	/**
+	 * Return identity for option cell
+	 * @return
+	 */
+	private int getOptionCellId(int optionIndex)
+	{
+		int optionCellID = 100 + cellid_count + optionIndex;
+		
+		return optionCellID ;
 	}
 
 	/**
@@ -197,4 +236,24 @@ public class Quiz extends Activity {
 		
 	}
 	
+	/**
+	 * Set/Reset Option words
+	 */
+	private void setOptionsText()
+	{
+		// Need to know which line/row is selected
+		// Option words won't change for one row
+		int rowIndex = 0;
+		if(current_selected_cellid > 0 )
+			rowIndex = cellid_toRowIndex.get(current_selected_cellid);
+		
+		// Get all option words
+		ArrayList<String> options = quizPoem.GetOptionWords(rowIndex);
+		
+		for(int i =0 ; i< options.size() ; i++)
+		{
+			textView_OptionWords.get(i).setText(options.get(i));
+			//TextView  optView = (TextView)this.findViewById();
+		}
+	}
 }
