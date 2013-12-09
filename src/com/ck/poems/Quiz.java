@@ -1,4 +1,4 @@
-package com.example.android.effectivenavigation;
+package com.ck.poems;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,12 +13,12 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 @SuppressLint("NewApi")
 public class Quiz extends Activity {
 	private static Poem quizPoem;
+	private static int first_quiz_cellid = -1;
 	private static int current_selected_cellid = -1;
 	private static int current_selected_optionid = -1;
 	private static int cellid_count = 0;
@@ -64,6 +64,9 @@ public class Quiz extends Activity {
         
         // Show Options
         showOptionWords();
+        
+        // Make sure first cell is selected initially
+        selectQuizCell((TextView)this.findViewById(first_quiz_cellid));
 	}
 	
 	/**
@@ -73,6 +76,7 @@ public class Quiz extends Activity {
 	{
 		LinearLayout ll = (LinearLayout)this.findViewById(R.id.ll_quiz);
         int lines =  quizPoem.GetPoemLineCount();
+        boolean hasFirstQuizCell = false;
         for(int i=0;i<lines;i++)
         {
         	String str = quizPoem.GetPoemLineText(i);
@@ -87,13 +91,19 @@ public class Quiz extends Activity {
     			tCell.setId(getQuizCellId(i,j));
     			setQuizCellLayout(tCell);
     			
+    			
     			if(i%2 == 0 || j == len - 1)
     			{
-    				//setQuizCellStyle(tCell,CellState.Normal);
     				tCell.setText(str.substring(j, j+1));
     			}
     			else
     			{
+    				if(!hasFirstQuizCell)
+    				{
+    					first_quiz_cellid = tCell.getId();
+    					hasFirstQuizCell = true;
+    				}
+    				
     				setQuizCellStyle(tCell,CellState.Normal);
     				tCell.setOnClickListener(new OnClickListener(){
     					@Override
@@ -155,6 +165,7 @@ public class Quiz extends Activity {
 		
 		// Display Initial option word
 		setOptionsText();
+		
 	}
 	
 	/**
@@ -251,12 +262,25 @@ public class Quiz extends Activity {
 			setQuizCellStyle(tv,CellState.Normal);
 		}
 		
+		System.out.println("id = "+id);
+		System.out.println("current_selected_cellid =" + current_selected_cellid);
+		
+		// Row index has changed?
+		boolean rowIndexChanged = current_selected_cellid == -1 || 
+				(cellid_toRowIndex.get(id) != cellid_toRowIndex.get(current_selected_cellid));
+		
+		System.out.println("row(id) = "+cellid_toRowIndex.get(id));
+		System.out.println("row(current_selected_cellid) =" + cellid_toRowIndex.get(current_selected_cellid));
+		
 		// set current cell
 		current_selected_cellid = id;
 		
 		// change style
 		setQuizCellStyle(cell, CellState.Selected);
 		
+		// If current row index has changed, reset option words
+		if(rowIndexChanged)
+			setOptionsText();
 	}
 	
 	/**
@@ -284,6 +308,10 @@ public class Quiz extends Activity {
 		// Save current selected word
 		current_selectedWord = cell.getText().toString();
 		
+		// Fill text into Quiz cell
+		if(current_selected_cellid  >= 0)
+			fillQuizText();
+		
 		// Change style
 		setQuizCellStyle(cell, CellState.Selected);
 		
@@ -307,7 +335,24 @@ public class Quiz extends Activity {
 		{
 			textView_OptionWords.get(i).setText(options.get(i));
 		}
+		
+		// Clear current selected option
+		current_selectedWord = "";
+		current_selected_optionid = -1;
 	}
+	
+	/**
+	 * Fill text into quiz cell
+	 */
+	private void fillQuizText()
+	{
+		if(current_selectedWord != "" && current_selected_cellid >= 0)
+		{
+			TextView t1 = (TextView)this.findViewById(current_selected_cellid);
+			t1.setText(current_selectedWord);
+		}
+	}
+	
 	
 	
 }

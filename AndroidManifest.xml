@@ -16,7 +16,7 @@
 -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.android.effectivenavigation"
+    package="com.ck.poems"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -25,13 +25,13 @@
         android:targetSdkVersion="19" />
 
     <application
-        android:name="com.example.android.effectivenavigation.MyApp"
+        android:name="com.ck.poems.MyApp"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@android:style/Theme.Holo.Light" >
         <activity
-            android:name="com.example.android.effectivenavigation.MainActivity"
+            android:name="com.ck.poems.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -39,12 +39,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.example.android.effectivenavigation.Quiz"
+            android:name="com.ck.poems.Quiz"
             android:label="@string/title_activity_quiz"
-            android:parentActivityName="com.example.android.effectivenavigation.MainActivity" >
+            android:parentActivityName="com.ck.poems.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.android.effectivenavigation.MainActivity" />
+                android:value="com.ck.poems.MainActivity" />
         </activity>
     </application>
 

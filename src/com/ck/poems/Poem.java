@@ -1,4 +1,4 @@
-package com.example.android.effectivenavigation;
+package com.ck.poems;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -156,6 +156,6 @@ public class Poem {
 	
  	public String GetShortTitle()
 	{
-		return Title.length() > 12 ? Title.substring(0,11) + "…": Title;
+		return Title.length() > 12 ? Title.substring(0,11) + "..": Title;
 	}
 }
