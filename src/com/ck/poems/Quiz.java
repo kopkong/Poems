@@ -6,10 +6,12 @@ import java.util.Map;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
@@ -91,7 +93,7 @@ public class Quiz extends Activity {
     			tCell.setId(getQuizCellId(i,j));
     			setQuizCellLayout(tCell);
     			
-    			
+    			// 
     			if(i%2 == 0 || j == len - 1)
     			{
     				tCell.setText(str.substring(j, j+1));
@@ -129,22 +131,15 @@ public class Quiz extends Activity {
 		
 		// 14 options word 
 		textView_OptionWords = new ArrayList<TextView>(Poem.MAX_OPTION_WORDS);
+		LayoutInflater inflater  = (LayoutInflater)this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		
 		// Generate textview for every option
 		for(int i=0;i< Poem.MAX_OPTION_WORDS; i ++)
 		{
 			TextView optionView = new TextView(this);
-			
 			optionView.setId(getOptionCellId(i));
-			optionView.setWidth(80);
-			optionView.setHeight(80);
-			optionView.setTextSize(22);
-			optionView.setGravity(Gravity.CENTER);
-		    LinearLayout.LayoutParams lp = 
-		            new LinearLayout.LayoutParams( LinearLayout.LayoutParams.WRAP_CONTENT,
-		            		LinearLayout.LayoutParams.WRAP_CONTENT);
-	        lp.setMargins(0,0,0,5);
-	        
+			
+			// Add click event
 	        optionView.setOnClickListener(new OnClickListener(){
 				@Override
 				public void onClick(View v)
@@ -155,11 +150,17 @@ public class Quiz extends Activity {
 	        
 			// Option 1- 7 put in line 1
 			if(i < 7) 
-				optLine1.addView(optionView,lp);
+			{
+				optionView = (TextView)inflater.inflate(R.layout.textview_quizoptioncell,optLine1,false);
+				optLine1.addView(optionView);
+			}
 			else
-				optLine2.addView(optionView,lp);
-			
-			// Save text view
+			{
+				optionView = (TextView)inflater.inflate(R.layout.textview_quizoptioncell,optLine2,false);
+				optLine2.addView(optionView);
+			}
+				
+//			// Save text view
 			textView_OptionWords.add(optionView);
 		}
 		
@@ -299,7 +300,7 @@ public class Quiz extends Activity {
 		if(current_selected_optionid > 0)
 		{
 			TextView previous = (TextView)this.findViewById(current_selected_optionid);
-			setQuizCellStyle(previous,CellState.NormalOption);
+			//setQuizCellStyle(previous,CellState.NormalOption);
 		}
 		
 		// Set current cell

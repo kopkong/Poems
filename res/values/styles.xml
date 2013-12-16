@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="gray">#eaeaea</color>
+	<color name="titlebackgroundcolor">#00abd7</color>
+	<color name="whitetext">#FFFFFF</color>
+	<color name="lightblue">#33B5E5</color>
+	<color name="black">#000000</color>
+	<color name="optioncellbackground">#46ffffff</color>
+</resources>

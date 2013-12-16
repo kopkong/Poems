@@ -59,8 +59,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/button_learn_next"
-                android:background="#33B5E5"
-                android:textColor="#FFFFFF"
+                android:background="@color/lightblue"
+                android:textColor="@color/whitetext"
                 android:textSize="22sp"
                 android:paddingLeft="40sp"
                 android:paddingRight="40sp" />
