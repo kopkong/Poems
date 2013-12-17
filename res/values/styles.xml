@@ -6,4 +6,5 @@
 	<color name="lightblue">#33B5E5</color>
 	<color name="black">#000000</color>
 	<color name="optioncellbackground">#46ffffff</color>
+	<color name="optioncellbackground_selected">#22ffffff</color>
 </resources>

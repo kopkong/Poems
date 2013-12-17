@@ -8,7 +8,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".Quiz"
     android:orientation="vertical"
-    android:gravity="top" >
+    android:gravity="center" >
 
     <TextView
         android:id="@+id/label_quiz_title"
@@ -17,7 +17,7 @@
         android:text="@string/empty_poem_title"
         android:gravity="center"
         android:textSize="20sp"
-        android:background="#B9CBFA" />
+        android:background="@color/gray" />
     
     <TextView
         android:id="@+id/label_quiz_author"
@@ -26,33 +26,34 @@
         android:gravity="center"
         android:text="@string/empty_poem_author"
         android:textSize="25sp"
-        android:background="#F2D1CC" /> 
+        android:background="@color/gray" /> 
         
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:padding="10sp" >
+        android:padding="10sp">
     <LinearLayout 
         android:id="@+id/ll_quiz"
         android:orientation="vertical" 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="top"
-        >
+        android:layout_gravity="top">
     </LinearLayout>
     </ScrollView>
     
     <Button
-    android:id="@+id/button1"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="@string/button_learn_next"
-    android:background="@color/lightblue"
-    android:textColor="@color/whitetext"
-    android:textSize="22sp"
-    android:paddingLeft="40sp"
-    android:paddingRight="40sp" />
+	    android:id="@+id/button1"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:text="@string/button_check_answer"
+	    android:background="@color/lightblue"
+	    android:textColor="@color/whitetext"
+	    android:textSize="22sp"
+	    android:paddingLeft="40sp"
+	    android:paddingRight="40sp"
+	    android:layout_marginBottom="10sp"/>
+    
     <LinearLayout 
         android:id="@+id/ll_options1"
         android:orientation="horizontal" 
