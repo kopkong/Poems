@@ -29,6 +29,7 @@
         android:background="@color/gray" /> 
         
     <ScrollView
+        android:id="@+id/sv_quiz"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"

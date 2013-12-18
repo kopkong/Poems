@@ -14,20 +14,22 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 @SuppressLint("NewApi")
 public class Quiz extends Activity {
 	private static Poem quizPoem;
-	private static int first_quiz_cellid = -1;
-	private static int current_selected_cellid = -1;
-	private static int current_selected_optionid = -1;
-	private static int cellid_count = 0;
+	private static int current_selected_cellid;
+	private static int current_selected_optionid ;
+	private static int cellid_count;
 	private static Map<Integer,Integer> cellid_toRowIndex;
 	private static Map<Integer,Integer> cellid_toColumnIndex;
 	private static String current_selectedWord;
 	private static ArrayList<Integer> quizcellid_list;
+	private static Map<Integer,String> quizcellid_answer;
 	
 	// Save all textView control for option words
 	// For multiply references
@@ -53,8 +55,17 @@ public class Quiz extends Activity {
         // Init and load data
         MyApp appState = ((MyApp)getApplicationContext());
         quizPoem = appState.GetQuizPoem();
+        
+        // Init global variable
         cellid_toRowIndex = new HashMap<Integer,Integer>();
         cellid_toColumnIndex = new HashMap<Integer,Integer>();
+        current_selected_cellid = -1;
+        current_selected_optionid = -1;
+        cellid_count = 0;
+        current_selectedWord = "";
+        quizcellid_list = new ArrayList<Integer>();
+        textView_OptionWords = new ArrayList<TextView>(Poem.MAX_OPTION_WORDS);
+        quizcellid_answer = new HashMap<Integer,String>();
         
         // Show Title
         TextView t1 = (TextView)this.findViewById(R.id.label_quiz_title);
@@ -63,6 +74,17 @@ public class Quiz extends Activity {
         // Show Author
         TextView t2 = (TextView)this.findViewById(R.id.label_quiz_author);
         t2.setText(quizPoem.Author);
+        
+        // Set button onclick event
+        Button btn = (Button)findViewById(R.id.button1);
+        btn.setOnClickListener(new OnClickListener()
+        {
+        	@Override
+        	public void onClick(View arg0)
+        	{
+        		checkAnswer();
+        	}
+        });
         
         // Show Contents
         showQuizContent();
@@ -81,7 +103,7 @@ public class Quiz extends Activity {
 	{
 		LinearLayout ll = (LinearLayout)this.findViewById(R.id.ll_quiz);
         int lines =  quizPoem.GetPoemLineCount();
-        quizcellid_list = new ArrayList<Integer>();
+        
         for(int i=0;i<lines;i++)
         {
         	String str = quizPoem.GetPoemLineText(i);
@@ -94,13 +116,12 @@ public class Quiz extends Activity {
     		for(int j =0 ; j<len; j++)
     		{
     			TextView tCell = new TextView(this);
-    			
     			setQuizCellLayout(tCell);
+    			String cellWord = str.substring(j, j+1);
     			
-    			// 
     			if(i%2 == 0 || j == len - 1)
     			{
-    				tCell.setText(str.substring(j, j+1));
+    				tCell.setText(cellWord);
     			}
     			else
     			{
@@ -115,8 +136,9 @@ public class Quiz extends Activity {
     					}
     				});
     				
-    				// Save cell id
+    				// Save cell id and answer
     				quizcellid_list.add(id);
+    				quizcellid_answer.put(id, cellWord);
     			}
     			ll2.addView(tCell);
     		}
@@ -133,7 +155,6 @@ public class Quiz extends Activity {
 		LinearLayout optLine2 = (LinearLayout)this.findViewById(R.id.ll_options2);
 		
 		// 14 options word 
-		textView_OptionWords = new ArrayList<TextView>(Poem.MAX_OPTION_WORDS);
 		LayoutInflater inflater  = (LayoutInflater)this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		
 		// Generate textview for every option
@@ -231,7 +252,7 @@ public class Quiz extends Activity {
 			borderBackground = this.getResources().getDrawable(R.drawable.quizcell_selected);
 			break;
 		case MarkedWrong:
-			borderBackground = null;
+			borderBackground = this.getResources().getDrawable(R.drawable.quizcell_wrong);
 			break;
 		default:
 			borderBackground = null;
@@ -300,6 +321,9 @@ public class Quiz extends Activity {
 		
 		// change style
 		setQuizCellStyle(cell, CellState.Selected);
+		
+		// Focus on cell
+		// cell.requestFocus();
 		
 		// If current row index has changed, reset option words
 		if(rowIndexChanged)
@@ -396,11 +420,39 @@ public class Quiz extends Activity {
 			jumptoId = quizcellid_list.get(idx + 1);
 		}
 		
+		// Scroll to top if it's the last cell
+		if(current_selected_cellid == len -1)
+		{
+			ScrollView scroll = (ScrollView)this.findViewById(R.id.sv_quiz);
+			scroll.fullScroll(ScrollView.FOCUS_UP);
+		}
+		
 		// TextView which we want jump to it
 		TextView v = (TextView)this.findViewById(jumptoId);
 		selectQuizCell(v);
+		
 	}
 	
-	
+	/**
+	 * Check Answer
+	 */
+	private void checkAnswer()
+	{
+		for(int i = 0 ;i < quizcellid_list.size() ; i ++)
+		{
+			int id = quizcellid_list.get(i);
+			TextView cell = (TextView)this.findViewById(id);
+			
+			// If wrong
+			if(cell.getText().length() == 0 || cell.getText().equals(quizcellid_answer.get(id)))
+			{
+				setQuizCellStyle(cell, CellState.MarkedWrong);
+			}
+			else
+			{
+				// do something here
+			}
+		}
+	}
 	
 }

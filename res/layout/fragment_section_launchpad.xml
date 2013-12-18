@@ -50,7 +50,6 @@
             android:gravity="center_horizontal"
             android:paddingTop="12sp"
              >
-
             <TextView
                 android:id="@+id/label_learn_process"
                 android:layout_width="wrap_content"
@@ -70,12 +69,6 @@
                 android:textSize="22sp"
                 android:paddingLeft="40sp"
                 android:paddingRight="40sp" />
-            
-
         </LinearLayout>
-     
     </LinearLayout>
-
-
-
 </FrameLayout>

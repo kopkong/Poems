@@ -231,6 +231,9 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 	    {
     		List<Poem> pList = helper.GetRecentPoem();
     		
+    		// empty listData first
+    		listData.clear();
+    		
     		if(pList!=null && !pList.isEmpty())
     		{
     			for(Poem p : pList)
@@ -265,11 +268,11 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 	        FillListViewData();
 	        PoemsAdapter adapter = new PoemsAdapter(getActivity(),listData);
 	        
-	        ListView lv = (ListView)rootView.findViewById(R.id.lv_recentPoems);
+	        ListView lv = (ListView)rootView.findViewById(android.R.id.list);
+	        
 	        // Clear all list items first
-	        
+	        setListAdapter(null);
 	        setListAdapter(adapter);
-	        
 	        return rootView;
 	     }
        

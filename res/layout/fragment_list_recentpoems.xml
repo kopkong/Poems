@@ -27,7 +27,7 @@
 
         <!-- android:id="@android:id/list" -->
         <ListView
-             android:id="@+id/lv_recentPoems"
+             android:id="@android:id/list"
              android:layout_height="0dp"
          	 android:layout_weight="1"
              android:layout_width="match_parent"
