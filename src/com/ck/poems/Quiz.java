@@ -279,7 +279,7 @@ public class Quiz extends Activity {
 			return;
 		
 		// unselect current cell, if there has.
-		if(current_selected_cellid > 0)
+		if(current_selected_cellid >= 0)
 		{
 			TextView tv = (TextView)this.findViewById(current_selected_cellid);
 			setQuizCellStyle(tv,CellState.Normal);
@@ -319,7 +319,7 @@ public class Quiz extends Activity {
 			return;
 		
 		// unselect current cell, if there has.
-		if(current_selected_optionid > 0)
+		if(current_selected_optionid >= 0)
 		{
 			TextView previous = (TextView)this.findViewById(current_selected_optionid);
 			setOptionCellStyle(previous,CellState.OptionNormal);

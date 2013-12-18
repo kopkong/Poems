@@ -37,6 +37,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 public class MainActivity extends FragmentActivity implements ActionBar.TabListener {
@@ -213,11 +214,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 						Intent intent = new Intent(mContext,Quiz.class);
 						appState.SetQuizPoem(helper.GetPoemByID((Integer)listData.get(position).get("id")));
 						startActivity(intent);
-//						AlertDialog.Builder builder = new AlertDialog.Builder(mContext);  
-//						builder.setTitle((String)listData.get(position).get("title"));
-//						builder.setMessage((String)listData.get(position).get("snapshot"));
-//						
-//						builder.show();
 					}
 				});
          		return convertView;
@@ -263,11 +259,17 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     	@Override
 	    public View onCreateView(LayoutInflater inflater, ViewGroup container,
 	             Bundle savedInstanceState) {
-	     	super.onCreateView(inflater, container, savedInstanceState);
+	     	//super.onCreateView(inflater, container, savedInstanceState);
 	        View rootView = inflater.inflate(R.layout.fragment_list_recentpoems, container, false);  
+	        
 	        FillListViewData();
 	        PoemsAdapter adapter = new PoemsAdapter(getActivity(),listData);
+	        
+	        ListView lv = (ListView)rootView.findViewById(R.id.lv_recentPoems);
+	        // Clear all list items first
+	        
 	        setListAdapter(adapter);
+	        
 	        return rootView;
 	     }
        
