@@ -375,7 +375,7 @@ public class Quiz extends Activity {
 		// Need to know which line/row is selected
 		// Option words won't change for one row
 		int rowIndex = 0;
-		if(current_selected_cellid > 0 )
+		if(current_selected_cellid >= 0 )
 			rowIndex = cellid_toRowIndex.get(current_selected_cellid);
 		
 		// Get all option words
@@ -442,9 +442,11 @@ public class Quiz extends Activity {
 		{
 			int id = quizcellid_list.get(i);
 			TextView cell = (TextView)this.findViewById(id);
-			
-			// If wrong
-			if(cell.getText().length() == 0 || cell.getText().equals(quizcellid_answer.get(id)))
+			String text = cell.getText().toString();
+			String answer = quizcellid_answer.get(id);
+					
+			// If wrong 
+			if(!text.equals(answer))
 			{
 				setQuizCellStyle(cell, CellState.MarkedWrong);
 			}
