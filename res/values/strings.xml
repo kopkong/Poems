@@ -32,5 +32,6 @@
     <string name="empty_poem_snapshot">啥都没有</string>
     <string name="button_check_answer">检查答案</string>
     <string name="mixed_word">哈</string>
-
+    <string name="action_search">搜索</string>
+	<string name="preference_file_key">com.ck.poems</string>
 </resources>

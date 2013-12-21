@@ -33,11 +33,14 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.ListFragment;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
 public class MainActivity extends FragmentActivity implements ActionBar.TabListener {
@@ -47,8 +50,13 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     
     AppSectionsPagerAdapter mAppSectionsPagerAdapter;
     ViewPager mViewPager;
+    static PoemsAdapter mAllPoemsAdapter;
+    static PoemsAdapter mRecentPoemsAdapter;
     
     private static DataHelper helper ;
+    private static String searchString;
+    private static List<Map<String,Object>> mList_AllPoems;
+    private static List<Map<String,Object>> mList_RecentPoems;
     
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,8 +103,26 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         // Init and load data
         appState = ((MyApp)getApplicationContext());
         helper = new DataHelper(this);
+        
+        searchString = "";
+        mList_AllPoems = new ArrayList<Map<String,Object>>();
+        mList_RecentPoems =  new ArrayList<Map<String,Object>>();
+        mAllPoemsAdapter = new PoemsAdapter(this,mList_AllPoems);
+        mRecentPoemsAdapter = new PoemsAdapter(this,mList_RecentPoems);
+        
+        // Init list view data
+        refreshRecentPoemsListData();
+        refreshAllPoemsListData();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu items for use in the action bar
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_activity_actions, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+    
     @Override
     public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
     }
@@ -109,6 +135,26 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
     @Override
     public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+    }
+    
+    /**
+     * Search poems
+     * @param view
+     */
+    public void searchPoems(View view)
+    {
+    	// Do search
+    	EditText et1 = (EditText)this.findViewById(R.id.et_search);
+    	searchString = et1.getText().toString();
+    	
+    	// Select all poems
+    	refreshAllPoemsListData();
+    	this.getActionBar().setSelectedNavigationItem(1);
+    	
+    	// Hide keyboard
+    	InputMethodManager imm = (InputMethodManager)getSystemService(
+    		      Context.INPUT_METHOD_SERVICE);
+    		imm.hideSoftInputFromWindow(et1.getWindowToken(), 0);
     }
 
     /**
@@ -129,7 +175,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                 case 1:
                 	return new AllPoemsSectionFragment();
                 default:
-                	return new BaseFragment();
+                	return null;
             }
         }
 
@@ -144,191 +190,173 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         }
     }
  
-    public static class BaseFragment extends ListFragment{
-    	
-    	public final class ViewHolder
+    public class PoemsAdapter extends BaseAdapter {
+		private LayoutInflater mInflater;
+		private List<Map<String,Object>> listData;
+		private Context mContext;
+		
+		public final class ViewHolder
 	    {
-    		public LinearLayout item;
+			public LinearLayout item;
 	    	public TextView title;
 	    	public TextView author;
 	    	public TextView snapshot;
 	    }
-
-        public class PoemsAdapter extends BaseAdapter
-         {
-         	private LayoutInflater mInflater;
-         	private List<Map<String,Object>> listData;
-         	private Context mContext;
-         	
-         	public PoemsAdapter(Context context, List<Map<String,Object>> list)
-         	{
-         		this.mInflater = LayoutInflater.from(context);
-         		this.listData = list;
-         		this.mContext = context;
-         	}
-         	
-         	@Override
-         	public int getCount()
-         	{
-         		return listData.size();
-         	}
-         	
-         	@Override
-         	public Object getItem(int position)
-         	{
-         		return null;
-         	}
-         	
-         	@Override
-         	public long getItemId(int position)
-         	{
-         		return position;
-         	}
-         	
-         	@Override
-         	public View getView(final int position, View convertView,ViewGroup parent)
-         	{
-         		ViewHolder holder = null;
-         		if(convertView == null)
-         		{
-         			holder = new ViewHolder();
-         			convertView = mInflater.inflate(R.layout.listview_poem,null);
-         			holder.item = (LinearLayout)convertView.findViewById(R.id.ll_poem);
-         			holder.title = (TextView)convertView.findViewById(R.id.label_poem_title);
-         			holder.author = (TextView)convertView.findViewById(R.id.label_poem_author);
-         			holder.snapshot = (TextView)convertView.findViewById(R.id.label_poem_snapshot);
-         			convertView.setTag(holder);
-         		}
-         		else
-         		{
-         			holder = (ViewHolder)convertView.getTag();
-         		}
-         		
-         		holder.title.setText((String)listData.get(position).get("title"));
-         		holder.author.setText((String)listData.get(position).get("author"));
-         		holder.snapshot.setText((String)listData.get(position).get("snapshot"));
-         		
-         		holder.item.setOnClickListener(new View.OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						Intent intent = new Intent(mContext,Quiz.class);
-						appState.SetQuizPoem(helper.GetPoemByID((Integer)listData.get(position).get("id")));
-						startActivity(intent);
-					}
-				});
-         		return convertView;
-         	}
-         }
+		
+		public PoemsAdapter(Context context, List<Map<String,Object>> list)
+		{
+			this.mInflater = LayoutInflater.from(context);
+			this.listData = list;
+			this.mContext = context;
+		}
+		
+		@Override
+		public int getCount()
+		{
+			return listData.size();
+		}
+		
+		@Override
+		public Object getItem(int position)
+		{
+			return null;
+		}
+		
+		@Override
+		public long getItemId(int position)
+		{
+			return position;
+		}
+		
+		@Override
+		public View getView(final int position, View convertView,ViewGroup parent)
+		{
+			ViewHolder holder = null;
+			if(convertView == null)
+			{
+				holder = new ViewHolder();
+				convertView = mInflater.inflate(R.layout.listview_poem,null);
+				holder.item = (LinearLayout)convertView.findViewById(R.id.ll_poem);
+				holder.title = (TextView)convertView.findViewById(R.id.label_poem_title);
+				holder.author = (TextView)convertView.findViewById(R.id.label_poem_author);
+				holder.snapshot = (TextView)convertView.findViewById(R.id.label_poem_snapshot);
+				convertView.setTag(holder);
+			}
+			else
+			{
+				holder = (ViewHolder)convertView.getTag();
+			}
+			
+			holder.title.setText((String)listData.get(position).get("title"));
+			holder.author.setText((String)listData.get(position).get("author"));
+			holder.snapshot.setText((String)listData.get(position).get("snapshot"));
+			
+			holder.item.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Intent intent = new Intent(mContext,Quiz.class);
+					appState.SetQuizPoem(helper.GetPoemByID((Integer)listData.get(position).get("id")));
+					startActivity(intent);
+				}
+			});
+			return convertView;
+		}
+	}
+  
+    private void refreshRecentPoemsListData()
+    {
+    	List<Poem> pList = helper.GetRecentPoem();
+		
+		// empty listData first
+    	mList_RecentPoems.clear();
+		
+		if(pList!=null && !pList.isEmpty())
+		{
+			for(Poem p : pList)
+			{
+				Map<String,Object> map = new HashMap<String,Object>();
+				if(p != null)
+				{
+					map.put("id", p.ID);
+	    			map.put("title",p.GetShortTitle());
+	    			map.put("author", p.Author);
+	    			map.put("snapshot", p.Snapshot);
+				}
+	    		else
+	    		{
+	    			map.put("id", 0);
+	    			map.put("title",getResources().getString(R.string.empty_poem_title));
+	    			map.put("author",getResources().getString(R.string.empty_poem_author));
+	    			map.put("snapshot",getResources().getString(R.string.empty_poem_snapshot));
+	    		}
+				
+				mList_RecentPoems.add(map);
+			}
+		}
+    }
+    
+    private void refreshAllPoemsListData()
+    {
+    	List<String> genres = helper.GetPoemsGenre();
+    	
+		// empty listData first
+    	mList_AllPoems.clear();
+		
+    	if(genres != null && !genres.isEmpty())
+    	{
+    		for(String str : genres)
+    		{
+    			List<Poem> pList = helper.GetPoemsByGenre(str,searchString);
+    			
+        		if(pList!=null && !pList.isEmpty())
+        		{
+        			for(Poem p : pList)
+        			{
+        				Map<String,Object> map = new HashMap<String,Object>();
+        				if(p != null)
+    					{
+        					map.put("id", p.ID);
+    		    			map.put("title",p.GetShortTitle());
+    		    			map.put("author", p.Author);
+    		    			map.put("snapshot", p.Snapshot);
+    					}
+    		    		else
+    		    		{
+    		    			map.put("id", 0);
+    		    			map.put("title",getResources().getString(R.string.empty_poem_title));
+    		    			map.put("author",getResources().getString(R.string.empty_poem_author));
+    		    			map.put("snapshot",getResources().getString(R.string.empty_poem_snapshot));
+    		    		}
+        				
+        				mList_AllPoems.add(map);
+        			}	
+    			}
+    		}
+    	}
     }
     
     /**
      * A fragment that launches other parts of the demo application.
      */
-    public static class RecentPoemSectionFragment extends BaseFragment {
-    	private static List<Map<String,Object>> listData = new ArrayList<Map<String,Object>>();
-    	
-    	private void FillListViewData()
-	    {
-    		List<Poem> pList = helper.GetRecentPoem();
-    		
-    		// empty listData first
-    		listData.clear();
-    		
-    		if(pList!=null && !pList.isEmpty())
-    		{
-    			for(Poem p : pList)
-    			{
-    				Map<String,Object> map = new HashMap<String,Object>();
-    				if(p != null)
-					{
-    					map.put("id", p.ID);
-		    			map.put("title",p.GetShortTitle());
-		    			map.put("author", p.Author);
-		    			map.put("snapshot", p.Snapshot);
-					}
-		    		else
-		    		{
-		    			map.put("id", 0);
-		    			map.put("title",getResources().getString(R.string.empty_poem_title));
-		    			map.put("author",getResources().getString(R.string.empty_poem_author));
-		    			map.put("snapshot",getResources().getString(R.string.empty_poem_snapshot));
-		    		}
-    				
-    				listData.add(map);
-    			}
-			}
-	    }
-    	
+    public static class RecentPoemSectionFragment extends ListFragment {   
+    	@Override
+	    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+	             Bundle savedInstanceState) {
+	        View rootView = inflater.inflate(R.layout.fragment_list_recentpoems, container, false);  
+	        setListAdapter(mRecentPoemsAdapter);
+	        return rootView;
+	     }
+    }
+
+    public static class AllPoemsSectionFragment extends ListFragment{
     	@Override
 	    public View onCreateView(LayoutInflater inflater, ViewGroup container,
 	             Bundle savedInstanceState) {
 	     	//super.onCreateView(inflater, container, savedInstanceState);
-	        View rootView = inflater.inflate(R.layout.fragment_list_recentpoems, container, false);  
-	        
-	        FillListViewData();
-	        PoemsAdapter adapter = new PoemsAdapter(getActivity(),listData);
-	        
-	        ListView lv = (ListView)rootView.findViewById(android.R.id.list);
-	        
-	        // Clear all list items first
-	        setListAdapter(null);
-	        setListAdapter(adapter);
-	        return rootView;
-	     }
-       
-    }
-
-    public static class AllPoemsSectionFragment extends BaseFragment{
-    	private static List<Map<String,Object>> listData = new ArrayList<Map<String,Object>>();
-    	
-    	private void FillListViewData()
-	    {
-	    	List<String> genres = helper.GetPoemsGenre();
-	    	
-	    	if(genres != null && !genres.isEmpty())
-	    	{
-	    		for(String str : genres)
-	    		{
-	    			List<Poem> pList = helper.GetPoemsByGenre(str);
-	    			
-	        		if(pList!=null && !pList.isEmpty())
-	        		{
-	        			for(Poem p : pList)
-	        			{
-	        				Map<String,Object> map = new HashMap<String,Object>();
-	        				if(p != null)
-	    					{
-	        					map.put("id", p.ID);
-	    		    			map.put("title",p.GetShortTitle());
-	    		    			map.put("author", p.Author);
-	    		    			map.put("snapshot", p.Snapshot);
-	    					}
-	    		    		else
-	    		    		{
-	    		    			map.put("id", 0);
-	    		    			map.put("title",getResources().getString(R.string.empty_poem_title));
-	    		    			map.put("author",getResources().getString(R.string.empty_poem_author));
-	    		    			map.put("snapshot",getResources().getString(R.string.empty_poem_snapshot));
-	    		    		}
-	        				
-	        				listData.add(map);
-	        			}	
-	    			}
-	    		}
-	    	}
-	    }
-    	
-    	@Override
-	    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-	             Bundle savedInstanceState) {
-	     	super.onCreateView(inflater, container, savedInstanceState);
 	        View rootView = inflater.inflate(R.layout.fragment_list_allpoems, container, false);  
-	        FillListViewData();
-	        PoemsAdapter adapter = new PoemsAdapter(getActivity(),listData);
-	        setListAdapter(adapter);
+	        setListAdapter(mAllPoemsAdapter);
 	        return rootView;
 	     } 
-    	
     }
 
 }

@@ -21,6 +21,8 @@ import android.widget.TextView;
 
 @SuppressLint("NewApi")
 public class Quiz extends Activity {
+	MyApp appState;
+	
 	private static Poem quizPoem;
 	private static int current_selected_cellid;
 	private static int current_selected_optionid ;
@@ -53,7 +55,7 @@ public class Quiz extends Activity {
 		setupActionBar();
 		
         // Init and load data
-        MyApp appState = ((MyApp)getApplicationContext());
+        appState = ((MyApp)getApplicationContext());
         quizPoem = appState.GetQuizPoem();
         
         // Init global variable
@@ -438,9 +440,11 @@ public class Quiz extends Activity {
 	 */
 	private void checkAnswer()
 	{
+		int wrongCellCount = 0;
 		for(int i = 0 ;i < quizcellid_list.size() ; i ++)
 		{
 			int id = quizcellid_list.get(i);
+			
 			TextView cell = (TextView)this.findViewById(id);
 			String text = cell.getText().toString();
 			String answer = quizcellid_answer.get(id);
@@ -449,12 +453,17 @@ public class Quiz extends Activity {
 			if(!text.equals(answer))
 			{
 				setQuizCellStyle(cell, CellState.MarkedWrong);
+				wrongCellCount ++;
 			}
 			else
 			{
 				// do something here
+				// result = true;
 			}
 		}
+		
+		boolean result = wrongCellCount > 0 ? false : true;
+		appState.UpdateRecorder(quizPoem.ID, result);
 	}
 	
 }

@@ -15,6 +15,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 public class DataHelper {
 	private Context ActivityContext;
@@ -23,7 +24,7 @@ public class DataHelper {
 	private static ArrayList<String> PoemGenre;
 	final int RECENT_RANGE_MIN = 0;
 	final int RECENT_RANGE_MAX = 5;
-
+	final String preference_file_key = "com.ck.poems.PREFERENCE_FILE_KEY";
 
 	public DataHelper(Context context) 
 	{
@@ -53,7 +54,7 @@ public class DataHelper {
 	
 	}
 	
-	public List<Poem> GetPoemsByGenre(String genre)
+	public List<Poem> GetPoemsByGenre(String genre,String searchString)
 	{
 		List<Poem> list = new ArrayList<Poem>();
 		
@@ -62,9 +63,33 @@ public class DataHelper {
 			Poem p = it.next();
 			if(p.Genre.equalsIgnoreCase(genre))
 			{
+				if(searchString.equals(""))
+				{
+					list.add(p);
+				}
+				else
+				{
+					if(p.Author.contains(searchString)|| p.Title.contains(searchString))
+						list.add(p);
+				}
+			}
+		
+		}
+		return list;
+	}
+	
+	public List<Poem> GetPoemsBySearchString(String inputString)
+	{
+		List<Poem> list = new ArrayList<Poem>();
+		for(Iterator<Poem> it = Poems.iterator(); it.hasNext();)
+		{
+			Poem p = it.next();
+			if(p.Author.contains(inputString) || p.Title.contains(inputString))
+			{
 				list.add(p);
 			}
 		}
+		
 		return list;
 	}
 	
@@ -164,5 +189,4 @@ public class DataHelper {
         return json;
 	}
 	
-
 }
