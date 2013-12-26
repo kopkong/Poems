@@ -10,7 +10,7 @@ public class MyApp extends Application {
 	private Map<Integer,Integer> poemTotalCount;
 	private Map<Integer,Integer> poemWrongCount;
 	
-	MyApp()
+	public MyApp()
 	{
 		poem = null;
 		InitRecorder();
@@ -62,5 +62,11 @@ public class MyApp extends Application {
 			else // Wrong
 				poemWrongCount.put(pid, 1);
 		}
+	}
+	
+	public void SaveRecordtoFile()
+	{
+		
+	
 	}
 }

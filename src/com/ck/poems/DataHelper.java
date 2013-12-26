@@ -24,7 +24,6 @@ public class DataHelper {
 	private static ArrayList<String> PoemGenre;
 	final int RECENT_RANGE_MIN = 0;
 	final int RECENT_RANGE_MAX = 5;
-	final String preference_file_key = "com.ck.poems.PREFERENCE_FILE_KEY";
 
 	public DataHelper(Context context) 
 	{
@@ -181,12 +180,10 @@ public class DataHelper {
 
             json = new String(buffer, "UTF-8");
 
-
         } catch (IOException ex) {
             ex.printStackTrace();
             return null;
         }
         return json;
 	}
-	
 }
