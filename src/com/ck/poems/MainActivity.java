@@ -103,6 +103,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         // Init and load data
         appState = ((MyApp)getApplicationContext());
         helper = new DataHelper(this);
+        appState.SetHelper(helper);
         
         searchString = "";
         mList_AllPoems = new ArrayList<Map<String,Object>>();
@@ -135,6 +136,14 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
     @Override
     public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+    }
+
+    @Override
+    protected void onStop()
+    {
+    	super.onStop();
+    	
+    	helper.SaveRecordToFile();
     }
     
     /**

@@ -32,6 +32,7 @@ public class Quiz extends Activity {
 	private static String current_selectedWord;
 	private static ArrayList<Integer> quizcellid_list;
 	private static Map<Integer,String> quizcellid_answer;
+	private static DataHelper helper;
 	
 	// Save all textView control for option words
 	// For multiply references
@@ -56,7 +57,9 @@ public class Quiz extends Activity {
 		
         // Init and load data
         appState = ((MyApp)getApplicationContext());
+        helper = appState.GetAppDataHelper();
         quizPoem = appState.GetQuizPoem();
+        
         
         // Init global variable
         cellid_toRowIndex = new HashMap<Integer,Integer>();
@@ -463,7 +466,7 @@ public class Quiz extends Activity {
 		}
 		
 		boolean result = wrongCellCount > 0 ? false : true;
-		appState.UpdateRecorder(quizPoem.ID, result);
+		helper.UpdateRecorder(quizPoem.ID, result);
 	}
 	
 }
