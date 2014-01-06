@@ -25,12 +25,14 @@ public class DataHelper {
 	private static ArrayList<Poem> Poems;
 	private static ArrayList<String> PoemGenre;
 	
+	
 	final int RECENT_RANGE_MIN = 0;
 	final int RECENT_RANGE_MAX = 5;
 	static final int TOTAL_POEMS_COUNT = 313;
 	
 	private Map<Integer,Integer> poemTotalCount;
 	private Map<Integer,Integer> poemWrongCount;
+	private ArrayList<Integer> recentPoems;
 
 	public DataHelper(Context context) 
 	{
@@ -42,6 +44,7 @@ public class DataHelper {
 		
 		LoadStaticPoemsData();
 		InitRecorder();
+		InitRecent();
 	}
 	
 	public List<String> GetPoemsGenre()
@@ -53,11 +56,15 @@ public class DataHelper {
 	{
 		if(Poems == null)
 			return null;
-		
-		// Sort P
 
 		// Return sublist
-		return Poems.subList(RECENT_RANGE_MIN, RECENT_RANGE_MAX );
+		ArrayList<Poem> retList = new ArrayList<Poem>();
+		for(int x: recentPoems)
+		{
+			retList.add(PoemDict.get(x));
+		}
+		
+		return retList;
 	
 	}
 	
@@ -203,6 +210,13 @@ public class DataHelper {
 		LoadRecordFromFile();
 	}
 	
+	public void InitRecent()
+	{
+		recentPoems = new ArrayList<Integer>(RECENT_RANGE_MAX);
+		
+		LoadRecentFromFile();
+	}
+	
 	public void UpdateRecorder(int pid,boolean result)
 	{
 		if(poemTotalCount.containsKey(pid))
@@ -219,6 +233,22 @@ public class DataHelper {
 				poemWrongCount.put(pid, val + 1);
 			}
 		}
+		
+		UpdateRecent(pid);
+	}
+	
+	private void UpdateRecent(int pid)
+	{
+		// Replace every one in recent list with previous one
+		// and kick out the last one
+		int newID = pid;
+		int oldID = 0;
+		for(int i = RECENT_RANGE_MIN; i < RECENT_RANGE_MAX ; i++)
+		{
+			oldID = recentPoems.get(i);
+			recentPoems.set(i,newID);
+			newID = oldID;
+		}
 	}
 	
 	public void SaveRecordToFile()
@@ -228,8 +258,16 @@ public class DataHelper {
 		
 		for(int pid = 1; pid < TOTAL_POEMS_COUNT; pid ++)
 		{
-			totalCountValue = poemTotalCount.get(pid).toString() + ",";
-			wrongCountValue = poemWrongCount.get(pid).toString() + ",";
+			int total = 0;
+			if (poemTotalCount.containsKey(pid))
+				total = poemTotalCount.get(pid);
+			
+			int wrong = 0;
+			if(poemWrongCount.containsKey(pid))
+				wrong = poemWrongCount.get(pid);
+			
+			totalCountValue += String.valueOf(total) + ",";
+			wrongCountValue += String.valueOf(wrong) + ",";
 		}
 		
 		// Trim last comma
@@ -257,6 +295,44 @@ public class DataHelper {
 			poemTotalCount.put(pid,Integer.parseInt(array_total[i])); 
 			poemWrongCount.put(pid,Integer.parseInt(array_wrong[i]));
 		}
+	}
+
+	private void SaveRecentToFile()
+	{
+		String recentPoemIDs = "";
+		for(int i = RECENT_RANGE_MIN ; i < RECENT_RANGE_MAX ; i ++)
+		{
+			recentPoemIDs += recentPoems.get(i).toString() + ",";
+		}
+		
+		// Trim last comma
+		recentPoemIDs = recentPoemIDs.substring(0,recentPoemIDs.length() - 1);
+		
+		// Save
+		WriteRecords(ActivityContext.getString(R.string.sharedPerfkey_recentPoems), recentPoemIDs);
+	}
+	
+	private void LoadRecentFromFile()
+	{
+		String recentPoemIDs = ReadRecords(ActivityContext.getString(R.string.sharedPerfkey_recentPoems));
+		String[] array_recentPoems = recentPoemIDs.split(",");
+		
+		if(array_recentPoems.length > RECENT_RANGE_MAX) // default value is loaded
+		{
+			recentPoems.add(1);
+			recentPoems.add(2);
+			recentPoems.add(3);
+			recentPoems.add(4);
+			recentPoems.add(5);
+		}
+		else
+		{
+			for(int i = 0 ; i < RECENT_RANGE_MAX ; i++)
+			{
+				recentPoems.add(Integer.parseInt(array_recentPoems[i]));
+			}
+		}
+			
 	}
 	
 	private void WriteRecords(String key,String value)
